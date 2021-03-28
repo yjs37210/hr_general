@@ -1,5 +1,7 @@
+drop sequence num_seq;
 create sequence num_seq;
 
+drop table information cascade constraint;
 create table information
 (name varchar2(20) not null,
 mil_id VARCHAR2(10) not null,
@@ -11,7 +13,7 @@ manager_id VARCHAR2(10) not null,
 constraint information_mil_id_pk primary key (mil_id)
 );
 
-
+drop table manager cascade constraint;
 create table manager
 (dept VARCHAR2(10) not null,
 position VARCHAR2(10) not null,
@@ -21,6 +23,7 @@ manager_pw number(10) not null,
 constraint manager_id_pk primary key (manager_id)
 );
 
+drop table submit cascade constraint;
 create table submit(
 sub_date number(5) not null,
 END_DATE number(5) NOT NULL,
@@ -31,6 +34,7 @@ mil_id VARCHAR2(10) not null,
 constraint submit_sub_number_pk primary key (sub_number)
 );
 
+drop table allow cascade constraint;
 create table allow(
 manager_id VARCHAR2(10) not null,
 sub_number number(10) not null,
@@ -38,8 +42,6 @@ yn varchar2(5) not null,
 note varchar2(100),
 constraint allow_sub_number_pk primary key (sub_number)
 );
-
-
 
 alter table information
 add constraint
@@ -65,17 +67,19 @@ references submit (sub_number);
 insert into manager
 values('SMART', 'KING', '13-345698', 'UNBI', 1234567);
 
-insert into manager
-values('SMART', 'KING', '1', 'HI', 1);
+create or replace view submitTable
+as select i.mil_id, i.rank, i.name, i.job, s.vac_type, s.sub_date, s.end_date, s.reason, s.sub_number, a.yn
+from information i, submit s, allow a
+where i.mil_id = s.mil_id and a.sub_number(+) = s.sub_number;
 
-
-create view submitTable
-as select i.mil_id, i.rank, i.name, i.job, s.vac_type, s.sub_date, s.end_date, s.reason, s.sub_number
-from information i, submit s
-where i.mil_id = s.mil_id;
-
+select * from SUBMITTABLE;
+select * from result;
+select * from allow;
+select * from submit;
 
 create or replace view result
 as select i.manager_id, i.name, s.sub_date, s.vac_type, s.reason, a.yn, a.note, i.mil_id
 from information i, submit s, allow a
-where i.mil_id = s.mil_id and s.sub_number = a.sub_number;
+where i.mil_id = s.mil_id and s.sub_number(+) = a.sub_number;
+
+select * from INFORMATION;
