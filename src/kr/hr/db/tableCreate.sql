@@ -70,7 +70,7 @@ values('SMART', 'KING', '13-345698', 'UNBI', 1234567);
 create or replace view submitTable
 as select i.mil_id, i.rank, i.name, i.job, s.vac_type, s.sub_date, s.end_date, s.reason, s.sub_number, a.yn
 from information i, submit s, allow a
-where i.mil_id = s.mil_id and a.sub_number(+) = s.sub_number;
+where i.mil_id = s.mil_id and a.sub_number(+) = s.sub_number and a.yn != 'N';
 
 select * from SUBMITTABLE;
 select * from result;
